@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CardCounter - Pet Simulator 99</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            color: #4a76a8;
+            text-align: center;
+        }
+        .container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        select, input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #4a76a8;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        button:hover {
+            background-color: #3a5b8c;
+        }
+        .advanced-toggle {
+            color: #4a76a8;
+            cursor: pointer;
+            margin: 10px 0;
+            font-weight: bold;
+        }
+        .advanced-options {
+            display: none;
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        .results {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e9f5ff;
+            border-radius: 5px;
+            display: none;
+        }
+        .results h3 {
+            margin-top: 0;
+            color: #4a76a8;
+        }
+        .percentage {
+            font-size: 24px;
+            font-weight: bold;
+            padding: 5px 10px;
+            border-radius: 5px;
+            display: inline-block;
+            margin: 5px 0;
+        }
+        
+        /* Color classes for percentages */
+        .very-low { background-color: #ffcdd2; color: #c62828; }  /* Very red */
+        .low { background-color: #ffecb3; color: #ff6f00; }       /* Orange-ish */
+        .medium { background-color: #fff9c4; color: #827717; }    /* Yellow-ish */
+        .high { background-color: #c8e6c9; color: #2e7d32; }      /* Light green */
+        .very-high { background-color: #a5d6a7; color: #1b5e20; } /* Deep green */
+        .card-preview {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Pet Simulator 99 Card Counter</h1>
+        
+        <div class="card-preview">
+            Calculate your chances of pulling rare cards in Pet Simulator 99!
+        </div>
+        
+        <div class="form-group">
+            <label for="card-select">Select Card:</label>
+            <select id="card-select">
+                <option value="0.115">Rainbow Hydra Cat - 0.115%</option>
+                <option value="0.153">Shiny Golden Fairy Moth - 0.153%</option>
+                <option value="0.226">Ultra Rare Card (??) - 0.226%</option>
+                <option value="0.384">Wicked Agony - 0.384%</option>
+                <option value="0.46">Shiny Lumi Axolotl - 0.46%</option>
+                <option value="0.575">Golden Hydra Cat - 0.575%</option>
+                <option value="0.767">Rainbow Fairy Moth - 0.767%</option>
+                <option value="2.3">Rainbow Lumi Axolotl - 2.3%</option>
+                <option value="2.88">Hydra Cat - 2.88%</option>
+                <option value="3.84">Golden Fairy Moth - 3.84%</option>
+                <option value="11.5">Golden Lumi Axolotl - 11.5%</option>
+                <option value="19.2">Fairy Moth - 19.2%</option>
+                <option value="57.5">Lumi Axolotl - 57.5%</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="packs">Number of Card Packs:</label>
+            <input type="number" id="packs" min="1" value="1">
+        </div>
+        
+        <div class="form-group">
+            <label for="owned">Amount of Selected Card Already Owned:</label>
+            <input type="number" id="owned" min="0" value="0">
+        </div>
+        
+        <div class="advanced-toggle" onclick="toggleAdvanced()">
+            Advanced Options ▼
+        </div>
+        
+        <div class="advanced-options" id="advanced">
+            <div class="form-group">
+                <label for="golden-owned">Amount of GOLDEN Variant Already Owned:</label>
+                <input type="number" id="golden-owned" min="0" value="0">
+            </div>
+            
+            <div class="form-group">
+                <label for="rainbow-owned">Amount of RAINBOW Variant Already Owned:</label>
+                <input type="number" id="rainbow-owned" min="0" value="0">
+            </div>
+        </div>
+        
+        <button onclick="calculate()">Calculate Chances</button>
+        
+        <div class="results" id="results">
+            <h3>Your Results</h3>
+            <p id="card-pull-chance"></p>
+            <p id="pet-fusion-chance"></p>
+            <div id="variant-chances"></div>
+        </div>
+    </div>
+
+    <script>
+        // Toggle advanced options visibility
+        function toggleAdvanced() {
+            const advancedSection = document.getElementById('advanced');
+            if (advancedSection.style.display === 'block') {
+                advancedSection.style.display = 'none';
+                document.querySelector('.advanced-toggle').innerHTML = 'Advanced Options ▼';
+            } else {
+                advancedSection.style.display = 'block';
+                document.querySelector('.advanced-toggle').innerHTML = 'Advanced Options ▲';
+            }
+        }
+        
+        // Main calculation function
+        function calculate() {
+            // Get input values
+            const cardSelect = document.getElementById('card-select');
+            const cardChance = parseFloat(cardSelect.value);
+            const cardName = cardSelect.options[cardSelect.selectedIndex].text.split(' - ')[0];
+            
+            const packs = parseInt(document.getElementById('packs').value);
+            let owned = parseInt(document.getElementById('owned').value);
+            const goldenOwned = parseInt(document.getElementById('golden-owned').value);
+            const rainbowOwned = parseInt(document.getElementById('rainbow-owned').value);
+            
+            // Adjust owned cards based on GCF of 3
+            // If owned > 3, reduce by the greatest multiple of 3 less than owned
+            if (owned > 3) {
+                const remainder = owned % 3;
+                owned = remainder === 0 ? 0 : remainder;
+            }
+            
+            // Calculate base chances
+            const totalCards = packs * 5; // Total cards from all packs
+            const singleCardChance = cardChance / 100; // Probability of getting the card in a single pull
+            
+            // Calculate probability of pulling at least one card
+            const pullChance = 1 - Math.pow(1 - singleCardChance, totalCards);
+            
+            // Calculate cards needed for pet fusion
+            const cardsNeededForPet = Math.max(0, 3 - owned);
+            
+            let petFusionChance = 0;
+            if (cardsNeededForPet <= 0) {
+                petFusionChance = 1; // Already has enough cards
+            } else {
+                // Calculate the probability of pulling at least cardsNeededForPet cards
+                petFusionChance = calculateBinomialProbability(totalCards, singleCardChance, cardsNeededForPet);
+            }
+            
+            // Function to format percentage with appropriate decimals
+            function formatPercentage(value) {
+                if (value > 99.5) {
+                    return value.toFixed(3); // Show 3 decimal places for nearly certain pulls
+                } else if (value < 0.5) {
+                    return value.toFixed(4); // Show 4 decimal places for rare pulls
+                } else {
+                    return value.toFixed(2); // 2 decimal places for common pulls
+                }
+            }
+            
+            // Function to get percentage color class
+            function getColorClass(percentage) {
+                if (percentage < 1) return "very-low";
+                if (percentage < 5) return "low";
+                if (percentage < 20) return "medium";
+                if (percentage < 50) return "high";
+                return "very-high";
+            }
+            
+            // Calculate formatted percentages
+            const pullPercentage = pullChance * 100;
+            const pullPercentageStr = formatPercentage(pullPercentage);
+            const pullColorClass = getColorClass(pullPercentage);
+            
+            // Display basic results
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('card-pull-chance').innerHTML = 
+                `Chance of pulling <strong>${cardName}</strong> at least once: <span class="percentage ${pullColorClass}">${pullPercentageStr}%</span>`;
+            
+            // Special handling for Ultra Rare Card
+            if (cardName === "Ultra Rare Card (??)") {
+                // Only show pull chance for Ultra Rare
+                document.getElementById('pet-fusion-chance').innerHTML = 
+                    `<em>Note: Fusion chances cannot be calculated accurately for Ultra Rare Cards</em>`;
+                document.getElementById('variant-chances').innerHTML = '';
+                return; // Exit early
+            } else {
+                // Regular card with fusion information
+                const fusionPercentage = petFusionChance * 100;
+                const fusionPercentageStr = formatPercentage(fusionPercentage);
+                const fusionColorClass = getColorClass(fusionPercentage);
+                
+                document.getElementById('pet-fusion-chance').innerHTML = 
+                    `Chance of getting enough cards to fuse into a pet (need ${cardsNeededForPet} more): <span class="percentage ${fusionColorClass}">${fusionPercentageStr}%</span>`;
+            }
+            
+            // Advanced variant calculations
+            let variantHTML = '';
+            
+            // Check if the current card has Golden/Rainbow variants
+            const cardLower = cardName.toLowerCase();
+            if (!cardLower.includes('golden') && !cardLower.includes('rainbow') && !cardLower.includes('shiny')) {
+                // Calculate Golden variant
+                const goldenCardsNeeded = Math.max(0, 10 - goldenOwned);
+                let goldenChance = 0;
+                
+                if (goldenCardsNeeded <= 0) {
+                    goldenChance = 1; // Already has enough cards
+                } else {
+                    goldenChance = calculateBinomialProbability(packs * 5, cardChance / 100, goldenCardsNeeded);
+                }
+                
+                const goldenPercentage = goldenChance * 100;
+                const goldenPercentageStr = formatPercentage(goldenPercentage);
+                const goldenColorClass = getColorClass(goldenPercentage);
+                
+                variantHTML += `<p>Chance of getting enough cards to create a <strong>Golden ${cardName}</strong> (need ${goldenCardsNeeded} more): <span class="percentage ${goldenColorClass}">${goldenPercentageStr}%</span></p>`;
+                
+                // Calculate Rainbow variant
+                const rainbowCardsNeeded = Math.max(0, 10 - rainbowOwned);
+                let rainbowChance = 0;
+                
+                // Check if we can go directly to Rainbow from Golden fusion
+                if (goldenOwned >= 10 || goldenChance > 0) {
+                    if (rainbowCardsNeeded <= 0) {
+                        rainbowChance = 1; // Already has enough golden cards
+                    } else if (goldenOwned < 10) {
+                        // Need to first make Golden, then Rainbow
+                        rainbowChance = goldenChance * 0.1; // Simplified approximation
+                    }
+                }
+                
+                const rainbowPercentage = rainbowChance * 100;
+                const rainbowPercentageStr = formatPercentage(rainbowPercentage);
+                const rainbowColorClass = getColorClass(rainbowPercentage);
+                
+                variantHTML += `<p>Chance of getting enough cards to create a <strong>Rainbow ${cardName}</strong> (need ${rainbowCardsNeeded} Golden cards): <span class="percentage ${rainbowColorClass}">${rainbowPercentageStr}%</span></p>`;
+            } else if (cardLower.includes('golden') && !cardLower.includes('rainbow') && !cardLower.includes('shiny')) {
+                // Calculate Rainbow variant for Golden cards
+                const rainbowCardsNeeded = Math.max(0, 10 - rainbowOwned);
+                let rainbowChance = 0;
+                
+                if (rainbowCardsNeeded <= 0) {
+                    rainbowChance = 1; // Already has enough cards
+                } else {
+                    rainbowChance = calculateBinomialProbability(packs * 5, cardChance / 100, rainbowCardsNeeded);
+                }
+                
+                const normalName = cardName.replace('Golden ', '');
+                const rainbowPercentage = rainbowChance * 100;
+                const rainbowPercentageStr = formatPercentage(rainbowPercentage);
+                const rainbowColorClass = getColorClass(rainbowPercentage);
+                
+                variantHTML += `<p>Chance of getting enough cards to create a <strong>Rainbow ${normalName}</strong> (need ${rainbowCardsNeeded} more Golden cards): <span class="percentage ${rainbowColorClass}">${rainbowPercentageStr}%</span></p>`;
+            }
+            
+            document.getElementById('variant-chances').innerHTML = variantHTML;
+        }
+        
+        // Calculate binomial probability of getting at least k successes
+        function calculateBinomialProbability(n, p, k) {
+            if (k <= 0) return 1;
+            if (p === 0) return 0;
+            if (p === 1) return 1;
+            
+            // For small numbers of packs, we can use exact binomial calculation
+            if (n * p < 10) {
+                let probability = 0;
+                for (let i = k; i <= n; i++) {
+                    probability += binomialCoefficient(n, i) * Math.pow(p, i) * Math.pow(1 - p, n - i);
+                }
+                return probability;
+            } else {
+                // For larger numbers, use normal approximation to binomial
+                const mean = n * p;
+                const stdDev = Math.sqrt(n * p * (1 - p));
+                
+                // Continuity correction
+                const z = (k - 0.5 - mean) / stdDev;
+                
+                // 1 - Φ(z) where Φ is the CDF of the standard normal distribution
+                return 1 - normalCDF(z);
+            }
+        }
+        
+        // Calculate binomial coefficient (n choose k)
+        function binomialCoefficient(n, k) {
+            if (k < 0 || k > n) return 0;
+            if (k === 0 || k === n) return 1;
+            
+            // Use symmetry to reduce calculations
+            if (k > n - k) k = n - k;
+            
+            let result = 1;
+            for (let i = 1; i <= k; i++) {
+                result *= (n - (k - i));
+                result /= i;
+            }
+            
+            return result;
+        }
+        
+        // Standard normal cumulative distribution function
+        function normalCDF(x) {
+            const t = 1 / (1 + 0.2316419 * Math.abs(x));
+            const d = 0.3989423 * Math.exp(-x * x / 2);
+            let probability = d * t * (0.3193815 + t * (-0.3565638 + t * (1.781478 + t * (-1.821256 + t * 1.330274))));
+            
+            if (x > 0) {
+                probability = 1 - probability;
+            }
+            
+            return probability;
+        }
+    </script>
+</body>
+</html>
