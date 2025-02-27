@@ -9,19 +9,24 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #f0f2f5;
             color: #333;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
+            margin: 0;
+            padding: 10px;
         }
         h1 {
             color: #4a76a8;
             text-align: center;
+            font-size: 1.8rem;
+            margin-top: 10px;
+            margin-bottom: 15px;
         }
         .container {
             background-color: white;
             border-radius: 10px;
-            padding: 20px;
+            padding: 15px;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            max-width: 100%;
+            margin: 0 auto;
+            box-sizing: border-box;
         }
         .form-group {
             margin-bottom: 15px;
@@ -37,6 +42,7 @@
             border: 1px solid #ddd;
             border-radius: 4px;
             box-sizing: border-box;
+            font-size: 16px; /* Better for mobile */
         }
         button {
             background-color: #4a76a8;
@@ -46,6 +52,9 @@
             border-radius: 4px;
             cursor: pointer;
             font-weight: bold;
+            width: 100%;
+            font-size: 16px;
+            margin-top: 10px;
         }
         button:hover {
             background-color: #3a5b8c;
@@ -75,12 +84,13 @@
             color: #4a76a8;
         }
         .percentage {
-            font-size: 24px;
+            font-size: 20px;
             font-weight: bold;
             padding: 5px 10px;
             border-radius: 5px;
             display: inline-block;
             margin: 5px 0;
+            word-break: break-word;
         }
         
         /* Color classes for percentages */
@@ -97,6 +107,20 @@
             font-style: italic;
         }
     </style>
+    <!-- Add this just before closing the head tag -->
+    <script>
+        // Adjust size for mobile devices
+        function adjustForMobile() {
+            if (window.innerWidth < 600) {
+                document.querySelectorAll('.percentage').forEach(el => {
+                    el.style.fontSize = '16px';
+                });
+            }
+        }
+        
+        window.addEventListener('load', adjustForMobile);
+        window.addEventListener('resize', adjustForMobile);
+    </script>
 </head>
 <body>
     <div class="container">
