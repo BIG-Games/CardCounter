@@ -5,29 +5,42 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CardCounter - Pet Simulator 99</title>
     <style>
+        /* Base styles for dark theme */
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f0f2f5;
-            color: #333;
+            background-color: #111111;
+            color: #e0e0e0;
             margin: 0;
             padding: 10px;
         }
         h1 {
-            color: #4a76a8;
             text-align: center;
             font-size: 1.8rem;
             margin-top: 10px;
             margin-bottom: 15px;
+            animation: rainbow 8s linear infinite;
+        }
+        @keyframes rainbow {
+            0% { color: #ff6b6b; }
+            14% { color: #ff9e6b; }
+            28% { color: #ffcd6b; }
+            42% { color: #c2ff6b; }
+            57% { color: #6bffd4; }
+            71% { color: #6bc2ff; }
+            85% { color: #986bff; }
+            100% { color: #ff6bb5; }
         }
         .container {
-            background-color: white;
+            background-color: #1a1a1a;
             border-radius: 10px;
             padding: 15px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
             max-width: 100%;
             margin: 0 auto;
             box-sizing: border-box;
         }
+        
+        /* Form elements */
         .form-group {
             margin-bottom: 15px;
         }
@@ -35,17 +48,29 @@
             display: block;
             margin-bottom: 5px;
             font-weight: bold;
+            color: #cccccc;
         }
-        select, input {
+        select, input, option {
             width: 100%;
             padding: 8px;
-            border: 1px solid #ddd;
+            border: 1px solid #555;
             border-radius: 4px;
             box-sizing: border-box;
-            font-size: 16px; /* Better for mobile */
+            font-size: 16px;
+            background-color: #111111 !important;
+            color: #ffffff;
+        }
+        /* Make sure dropdown options are dark too */
+        option {
+            background-color: #111111 !important;
+        }
+        select:focus, input:focus {
+            outline: none;
+            border-color: #66a3ff;
+            background-color: #111111 !important;
         }
         button {
-            background-color: #4a76a8;
+            background-color: #1e3a5a;
             color: white;
             border: none;
             padding: 10px 15px;
@@ -55,34 +80,25 @@
             width: 100%;
             font-size: 16px;
             margin-top: 10px;
+            animation: buttonGlow 8s infinite;
+        }
+        @keyframes buttonGlow {
+            0% { background-color: #1e3a5a; }
+            14% { background-color: #3a1e5a; }
+            28% { background-color: #5a1e3a; }
+            42% { background-color: #5a3a1e; }
+            57% { background-color: #3a5a1e; }
+            71% { background-color: #1e5a3a; }
+            85% { background-color: #1e3a5a; }
+            100% { background-color: #1e3a5a; }
         }
         button:hover {
-            background-color: #3a5b8c;
+            filter: brightness(120%);
         }
-        .advanced-toggle {
-            color: #4a76a8;
-            cursor: pointer;
-            margin: 10px 0;
-            font-weight: bold;
-        }
-        .advanced-options {
-            display: none;
-            background-color: #f9f9f9;
-            padding: 15px;
-            border-radius: 5px;
-            margin-top: 10px;
-        }
-        .results {
-            margin-top: 20px;
-            padding: 15px;
-            background-color: #e9f5ff;
-            border-radius: 5px;
-            display: none;
-        }
-        .results h3 {
-            margin-top: 0;
-            color: #4a76a8;
-        }
+        
+        /* Advanced options - removed for simplicity */
+        
+        /* Results styling */
         .percentage {
             font-size: 20px;
             font-weight: bold;
@@ -94,32 +110,73 @@
         }
         
         /* Color classes for percentages */
-        .very-low { background-color: #ffcdd2; color: #c62828; }  /* Very red */
-        .low { background-color: #ffecb3; color: #ff6f00; }       /* Orange-ish */
-        .medium { background-color: #fff9c4; color: #827717; }    /* Yellow-ish */
-        .high { background-color: #c8e6c9; color: #2e7d32; }      /* Light green */
-        .very-high { background-color: #a5d6a7; color: #1b5e20; } /* Deep green */
+        .very-low { background-color: #3d1a1d; color: #ff9999; }
+        .low { background-color: #3d2515; color: #ffcc99; }
+        .medium { background-color: #3d3d10; color: #ffff99; }
+        .high { background-color: #153d15; color: #99ff99; }
+        .very-high { background-color: #0a3a0a; color: #66ff66; }
+        
+        .results {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #111111;
+            border-radius: 5px;
+            display: none;
+            border: 1px solid #444;
+        }
+        .results h3 {
+            margin-top: 0;
+            animation: textGlow 8s infinite;
+        }
         .card-preview {
-            background-color: #f9f9f9;
+            background-color: #111111;
             padding: 10px;
             margin-bottom: 15px;
             border-radius: 5px;
             font-style: italic;
+            color: #bbbbbb;
+            border: 1px solid #444;
         }
-    </style>
-    <!-- Add this just before closing the head tag -->
-    <script>
-        // Adjust size for mobile devices
-        function adjustForMobile() {
-            if (window.innerWidth < 600) {
-                document.querySelectorAll('.percentage').forEach(el => {
-                    el.style.fontSize = '16px';
-                });
+        
+        /* Ensure mobile compatibility */
+        @media (max-width: 600px) {
+            body {
+                padding: 5px;
+            }
+            .container {
+                padding: 10px;
+            }
+            .percentage {
+                font-size: 16px;
+            }
+            input, select, button {
+                font-size: 16px;
+                padding: 10px 8px; /* Larger touch targets */
+                background-color: #111111 !important;
             }
         }
         
-        window.addEventListener('load', adjustForMobile);
-        window.addEventListener('resize', adjustForMobile);
+        /* Fix webkit autofill background */
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover, 
+        input:-webkit-autofill:focus, 
+        input:-webkit-autofill:active {
+            -webkit-box-shadow: 0 0 0 30px #111111 inset !important;
+            -webkit-text-fill-color: #ffffff !important;
+        }
+    </style>
+    
+    <!-- Add this just before closing the head tag -->
+    <script>
+        // Ensure elements are dark on all browsers
+        document.addEventListener('DOMContentLoaded', function() {
+            // Force dark backgrounds on all inputs
+            const darkElements = document.querySelectorAll('input, select, option');
+            darkElements.forEach(el => {
+                el.style.backgroundColor = '#111111';
+                el.style.color = '#ffffff';
+            });
+        });
     </script>
 </head>
 <body>
@@ -132,47 +189,32 @@
         
         <div class="form-group">
             <label for="card-select">Select Card:</label>
-            <select id="card-select">
-                <option value="0.115">Rainbow Hydra Cat - 0.115%</option>
-                <option value="0.153">Shiny Golden Fairy Moth - 0.153%</option>
-                <option value="0.226">Ultra Rare Card (??) - 0.226%</option>
-                <option value="0.384">Wicked Agony - 0.384%</option>
-                <option value="0.46">Shiny Lumi Axolotl - 0.46%</option>
-                <option value="0.575">Golden Hydra Cat - 0.575%</option>
-                <option value="0.767">Rainbow Fairy Moth - 0.767%</option>
-                <option value="2.3">Rainbow Lumi Axolotl - 2.3%</option>
-                <option value="2.88">Hydra Cat - 2.88%</option>
-                <option value="3.84">Golden Fairy Moth - 3.84%</option>
-                <option value="11.5">Golden Lumi Axolotl - 11.5%</option>
-                <option value="19.2">Fairy Moth - 19.2%</option>
-                <option value="57.5">Lumi Axolotl - 57.5%</option>
+            <select id="card-select" style="background-color: #111111;">
+                <option value="">Choose card</option>
+                <option value="0.226">Huges, shiny rainbow cards, etc.</option>
+                <option value="0.115">Rainbow Hydra Cat</option>
+                <option value="0.153">Shiny Golden Fairy Moth</option>
+                <option value="0.384">Wicked Agony</option>
+                <option value="0.46">Shiny Lumi Axolotl</option>
+                <option value="0.575">Golden Hydra Cat</option>
+                <option value="0.767">Rainbow Fairy Moth</option>
+                <option value="2.3">Rainbow Lumi Axolotl</option>
+                <option value="2.88">Hydra Cat</option>
+                <option value="3.84">Golden Fairy Moth</option>
+                <option value="11.5">Golden Lumi Axolotl</option>
+                <option value="19.2">Fairy Moth</option>
+                <option value="57.5">Lumi Axolotl</option>
             </select>
         </div>
         
         <div class="form-group">
             <label for="packs">Number of Card Packs:</label>
-            <input type="number" id="packs" min="1" value="1">
+            <input type="number" id="packs" min="1" value="1" style="background-color: #111111;">
         </div>
         
         <div class="form-group">
             <label for="owned">Amount of Selected Card Already Owned:</label>
-            <input type="number" id="owned" min="0" value="0">
-        </div>
-        
-        <div class="advanced-toggle" onclick="toggleAdvanced()">
-            Advanced Options ▼
-        </div>
-        
-        <div class="advanced-options" id="advanced">
-            <div class="form-group">
-                <label for="golden-owned">Amount of GOLDEN Variant Already Owned:</label>
-                <input type="number" id="golden-owned" min="0" value="0">
-            </div>
-            
-            <div class="form-group">
-                <label for="rainbow-owned">Amount of RAINBOW Variant Already Owned:</label>
-                <input type="number" id="rainbow-owned" min="0" value="0">
-            </div>
+            <input type="number" id="owned" min="0" value="0" style="background-color: #111111;">
         </div>
         
         <button onclick="calculate()">Calculate Chances</button>
@@ -186,163 +228,42 @@
     </div>
 
     <script>
-        // Toggle advanced options visibility
-        function toggleAdvanced() {
-            const advancedSection = document.getElementById('advanced');
-            if (advancedSection.style.display === 'block') {
-                advancedSection.style.display = 'none';
-                document.querySelector('.advanced-toggle').innerHTML = 'Advanced Options ▼';
+        // Debug helper function - defined at global scope
+        function debugValue(value, defaultVal = 0) {
+            if (isNaN(value) || value === undefined || value === null) {
+                console.log("Found NaN value", value);
+                return defaultVal;
+            }
+            return value;
+        }
+    
+        // Ensure dark theme on all elements
+        function enforceDarkMode() {
+            document.querySelectorAll('input, select, option').forEach(el => {
+                el.style.backgroundColor = '#111111';
+            });
+        }
+        
+        // Format percentage with appropriate decimals
+        function formatPercentage(value) {
+            if (value === 0 || value === 100) {
+                return value.toFixed(0); // No decimal for exactly 0% or 100%
+            } else if (value > 99.5) {
+                return value.toFixed(3); // Show 3 decimal places for nearly certain pulls
+            } else if (value < 0.5) {
+                return value.toFixed(4); // Show 4 decimal places for rare pulls
             } else {
-                advancedSection.style.display = 'block';
-                document.querySelector('.advanced-toggle').innerHTML = 'Advanced Options ▲';
+                return value.toFixed(2); // 2 decimal places for common pulls
             }
         }
         
-        // Main calculation function
-        function calculate() {
-            // Get input values
-            const cardSelect = document.getElementById('card-select');
-            const cardChance = parseFloat(cardSelect.value);
-            const cardName = cardSelect.options[cardSelect.selectedIndex].text.split(' - ')[0];
-            
-            const packs = parseInt(document.getElementById('packs').value);
-            let owned = parseInt(document.getElementById('owned').value);
-            const goldenOwned = parseInt(document.getElementById('golden-owned').value);
-            const rainbowOwned = parseInt(document.getElementById('rainbow-owned').value);
-            
-            // Adjust owned cards based on GCF of 3
-            // If owned > 3, reduce by the greatest multiple of 3 less than owned
-            if (owned > 3) {
-                const remainder = owned % 3;
-                owned = remainder === 0 ? 0 : remainder;
-            }
-            
-            // Calculate base chances
-            const totalCards = packs * 5; // Total cards from all packs
-            const singleCardChance = cardChance / 100; // Probability of getting the card in a single pull
-            
-            // Calculate probability of pulling at least one card
-            const pullChance = 1 - Math.pow(1 - singleCardChance, totalCards);
-            
-            // Calculate cards needed for pet fusion
-            const cardsNeededForPet = Math.max(0, 3 - owned);
-            
-            let petFusionChance = 0;
-            if (cardsNeededForPet <= 0) {
-                petFusionChance = 1; // Already has enough cards
-            } else {
-                // Calculate the probability of pulling at least cardsNeededForPet cards
-                petFusionChance = calculateBinomialProbability(totalCards, singleCardChance, cardsNeededForPet);
-            }
-            
-            // Function to format percentage with appropriate decimals
-            function formatPercentage(value) {
-                if (value > 99.5) {
-                    return value.toFixed(3); // Show 3 decimal places for nearly certain pulls
-                } else if (value < 0.5) {
-                    return value.toFixed(4); // Show 4 decimal places for rare pulls
-                } else {
-                    return value.toFixed(2); // 2 decimal places for common pulls
-                }
-            }
-            
-            // Function to get percentage color class
-            function getColorClass(percentage) {
-                if (percentage < 1) return "very-low";
-                if (percentage < 5) return "low";
-                if (percentage < 20) return "medium";
-                if (percentage < 50) return "high";
-                return "very-high";
-            }
-            
-            // Calculate formatted percentages
-            const pullPercentage = pullChance * 100;
-            const pullPercentageStr = formatPercentage(pullPercentage);
-            const pullColorClass = getColorClass(pullPercentage);
-            
-            // Display basic results
-            document.getElementById('results').style.display = 'block';
-            document.getElementById('card-pull-chance').innerHTML = 
-                `Chance of pulling <strong>${cardName}</strong> at least once: <span class="percentage ${pullColorClass}">${pullPercentageStr}%</span>`;
-            
-            // Special handling for Ultra Rare Card
-            if (cardName === "Ultra Rare Card (??)") {
-                // Only show pull chance for Ultra Rare
-                document.getElementById('pet-fusion-chance').innerHTML = 
-                    `<em>Note: Fusion chances cannot be calculated accurately for Ultra Rare Cards</em>`;
-                document.getElementById('variant-chances').innerHTML = '';
-                return; // Exit early
-            } else {
-                // Regular card with fusion information
-                const fusionPercentage = petFusionChance * 100;
-                const fusionPercentageStr = formatPercentage(fusionPercentage);
-                const fusionColorClass = getColorClass(fusionPercentage);
-                
-                document.getElementById('pet-fusion-chance').innerHTML = 
-                    `Chance of getting enough cards to fuse into a pet (need ${cardsNeededForPet} more): <span class="percentage ${fusionColorClass}">${fusionPercentageStr}%</span>`;
-            }
-            
-            // Advanced variant calculations
-            let variantHTML = '';
-            
-            // Check if the current card has Golden/Rainbow variants
-            const cardLower = cardName.toLowerCase();
-            if (!cardLower.includes('golden') && !cardLower.includes('rainbow') && !cardLower.includes('shiny')) {
-                // Calculate Golden variant
-                const goldenCardsNeeded = Math.max(0, 10 - goldenOwned);
-                let goldenChance = 0;
-                
-                if (goldenCardsNeeded <= 0) {
-                    goldenChance = 1; // Already has enough cards
-                } else {
-                    goldenChance = calculateBinomialProbability(packs * 5, cardChance / 100, goldenCardsNeeded);
-                }
-                
-                const goldenPercentage = goldenChance * 100;
-                const goldenPercentageStr = formatPercentage(goldenPercentage);
-                const goldenColorClass = getColorClass(goldenPercentage);
-                
-                variantHTML += `<p>Chance of getting enough cards to create a <strong>Golden ${cardName}</strong> (need ${goldenCardsNeeded} more): <span class="percentage ${goldenColorClass}">${goldenPercentageStr}%</span></p>`;
-                
-                // Calculate Rainbow variant
-                const rainbowCardsNeeded = Math.max(0, 10 - rainbowOwned);
-                let rainbowChance = 0;
-                
-                // Check if we can go directly to Rainbow from Golden fusion
-                if (goldenOwned >= 10 || goldenChance > 0) {
-                    if (rainbowCardsNeeded <= 0) {
-                        rainbowChance = 1; // Already has enough golden cards
-                    } else if (goldenOwned < 10) {
-                        // Need to first make Golden, then Rainbow
-                        rainbowChance = goldenChance * 0.1; // Simplified approximation
-                    }
-                }
-                
-                const rainbowPercentage = rainbowChance * 100;
-                const rainbowPercentageStr = formatPercentage(rainbowPercentage);
-                const rainbowColorClass = getColorClass(rainbowPercentage);
-                
-                variantHTML += `<p>Chance of getting enough cards to create a <strong>Rainbow ${cardName}</strong> (need ${rainbowCardsNeeded} Golden cards): <span class="percentage ${rainbowColorClass}">${rainbowPercentageStr}%</span></p>`;
-            } else if (cardLower.includes('golden') && !cardLower.includes('rainbow') && !cardLower.includes('shiny')) {
-                // Calculate Rainbow variant for Golden cards
-                const rainbowCardsNeeded = Math.max(0, 10 - rainbowOwned);
-                let rainbowChance = 0;
-                
-                if (rainbowCardsNeeded <= 0) {
-                    rainbowChance = 1; // Already has enough cards
-                } else {
-                    rainbowChance = calculateBinomialProbability(packs * 5, cardChance / 100, rainbowCardsNeeded);
-                }
-                
-                const normalName = cardName.replace('Golden ', '');
-                const rainbowPercentage = rainbowChance * 100;
-                const rainbowPercentageStr = formatPercentage(rainbowPercentage);
-                const rainbowColorClass = getColorClass(rainbowPercentage);
-                
-                variantHTML += `<p>Chance of getting enough cards to create a <strong>Rainbow ${normalName}</strong> (need ${rainbowCardsNeeded} more Golden cards): <span class="percentage ${rainbowColorClass}">${rainbowPercentageStr}%</span></p>`;
-            }
-            
-            document.getElementById('variant-chances').innerHTML = variantHTML;
+        // Function to get percentage color class
+        function getColorClass(percentage) {
+            if (percentage < 1) return "very-low";
+            if (percentage < 5) return "low";
+            if (percentage < 20) return "medium";
+            if (percentage < 50) return "high";
+            return "very-high";
         }
         
         // Calculate binomial probability of getting at least k successes
@@ -350,6 +271,34 @@
             if (k <= 0) return 1;
             if (p === 0) return 0;
             if (p === 1) return 1;
+            
+            // Handle very large numbers
+            if (n > 200) {
+                // For very large n, use improved normal approximation
+                const mean = n * p;
+                const stdDev = Math.sqrt(n * p * (1 - p));
+                
+                // When n*p is very large, success is almost certain for reasonable k
+                if (mean > 100 && k < mean) {
+                    return 0.9999; // Effectively certain
+                }
+                
+                // Special handling for potential numerical issues
+                try {
+                    // Continuity correction
+                    const z = (k - 0.5 - mean) / stdDev;
+                    // 1 - Φ(z) where Φ is the CDF of the standard normal distribution
+                    return 1 - normalCDF(z);
+                } catch (e) {
+                    console.log("Error in calculation:", e);
+                    // Provide fallback value based on ratio
+                    if (k/n < p) {
+                        return 0.95; // Likely to get enough cards
+                    } else {
+                        return 0.05; // Unlikely to get enough cards
+                    }
+                }
+            }
             
             // For small numbers of packs, we can use exact binomial calculation
             if (n * p < 10) {
@@ -400,6 +349,131 @@
             
             return probability;
         }
+        
+        // Main calculation function
+        function calculate() {
+            // Enforce dark mode on all elements
+            enforceDarkMode();
+            
+            // Get input values
+            const cardSelect = document.getElementById('card-select');
+            const cardChance = parseFloat(cardSelect.value);
+            
+            // Validate card selection
+            if (!cardChance) {
+                alert("Please select a card first");
+                return;
+            }
+            
+            const cardName = cardSelect.options[cardSelect.selectedIndex].text;
+            const cardLower = cardName.toLowerCase();
+            
+            // Parse and limit input values for safety
+            let packs = parseInt(document.getElementById('packs').value) || 1; // Default to 1 if empty
+            // Limit to reasonable maximum to avoid calculation issues
+            if (packs > 1000) {
+                packs = 1000;
+                document.getElementById('packs').value = 1000;
+                alert("Maximum number of packs is limited to 1000 for calculation accuracy");
+            }
+            
+            let owned = parseInt(document.getElementById('owned').value) || 0; // Default to 0 if empty
+            
+            // Adjust owned cards based on GCF of 3
+            // If owned > 3, reduce by the greatest multiple of 3 less than owned
+            if (owned > 3) {
+                const remainder = owned % 3;
+                owned = remainder === 0 ? 0 : remainder;
+            }
+            
+            // Adjust owned cards based on GCF of 3
+            // If owned > 3, reduce by the greatest multiple of 3 less than owned
+            if (owned > 3) {
+                const remainder = owned % 3;
+                owned = remainder === 0 ? 0 : remainder;
+            }
+            
+            // Calculate base chances
+            const totalCards = packs * 5; // Total cards from all packs
+            const singleCardChance = cardChance / 100; // Probability of getting the card in a single pull
+            
+            // Calculate probability of pulling at least one card
+            const pullChance = 1 - Math.pow(1 - singleCardChance, totalCards);
+            
+            // Calculate cards needed for pet fusion
+            const cardsNeededForPet = Math.max(0, 3 - owned);
+            
+            let petFusionChance = 0;
+            if (cardsNeededForPet <= 0) {
+                petFusionChance = 1; // Already has enough cards
+            } else {
+                // Calculate the probability of pulling at least cardsNeededForPet cards
+                petFusionChance = calculateBinomialProbability(totalCards, singleCardChance, cardsNeededForPet);
+            }
+            
+            // Calculate formatted percentages
+            const pullPercentage = debugValue(pullChance * 100);
+            const pullPercentageStr = formatPercentage(pullPercentage);
+            const pullColorClass = getColorClass(pullPercentage);
+            
+            // Display basic results
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('card-pull-chance').innerHTML = 
+                `Chance of pulling <strong>${cardName}</strong> at least once: <span class="percentage ${pullColorClass}">${pullPercentageStr}%</span>`;
+            
+            // Special handling for Ultra Rare Card
+            if (cardName === "Huges, shiny rainbow cards, etc.") {
+                // Only show pull chance for Ultra Rare
+                document.getElementById('pet-fusion-chance').innerHTML = 
+                    `<em>Note: Fusion chances cannot be calculated accurately for Ultra Rare Cards</em>`;
+                document.getElementById('variant-chances').innerHTML = '';
+                return; // Exit early
+            } else {
+                // Regular card with fusion information
+                const fusionPercentage = debugValue(petFusionChance * 100);
+                const fusionPercentageStr = formatPercentage(fusionPercentage);
+                const fusionColorClass = getColorClass(fusionPercentage);
+                
+                document.getElementById('pet-fusion-chance').innerHTML = 
+                    `Chance of getting enough cards to fuse into a pet (need ${cardsNeededForPet} more): <span class="percentage ${fusionColorClass}">${fusionPercentageStr}%</span>`;
+            }
+            
+            document.getElementById('variant-chances').innerHTML = '';
+            
+            // Enforce dark mode again after results are displayed
+            enforceDarkMode();
+        }
+        
+        // Initialize event listeners
+        window.addEventListener('load', function() {
+            // Enforce dark theme
+            enforceDarkMode();
+            
+            // Add event listener to disable owned input for ultra rare cards
+            const cardSelect = document.getElementById('card-select');
+            const ownedInput = document.getElementById('owned');
+            
+            cardSelect.addEventListener('change', function() {
+                if (this.value === "0.226") {
+                    // Ultra rare card selected
+                    ownedInput.disabled = true;
+                    ownedInput.style.backgroundColor = "#222222";
+                    ownedInput.style.opacity = "0.5";
+                    ownedInput.value = "0";
+                } else {
+                    // Regular card selected
+                    ownedInput.disabled = false;
+                    ownedInput.style.backgroundColor = "#111111";
+                    ownedInput.style.opacity = "1";
+                }
+                
+                // Re-enforce dark theme
+                enforceDarkMode();
+            });
+        });
+        
+        // Handle window resize
+        window.addEventListener('resize', enforceDarkMode);
     </script>
 </body>
 </html>
