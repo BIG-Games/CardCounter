@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CardCounter - Pet Simulator 99</title>
     <style>
-        /* Base styles for dark theme */
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #111111;
@@ -40,7 +39,6 @@
             box-sizing: border-box;
         }
         
-        /* Form elements */
         .form-group {
             margin-bottom: 15px;
         }
@@ -60,7 +58,6 @@
             background-color: #111111 !important;
             color: #ffffff;
         }
-        /* Make sure dropdown options are dark too */
         option {
             background-color: #111111 !important;
         }
@@ -96,9 +93,6 @@
             filter: brightness(120%);
         }
         
-        /* Advanced options - removed for simplicity */
-        
-        /* Results styling */
         .percentage {
             font-size: 20px;
             font-weight: bold;
@@ -109,7 +103,33 @@
             word-break: break-word;
         }
         
-        /* Color classes for percentages */
+        .contribute-btn {
+            background-color: #ffa500;
+            color: #222;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            padding: 0;
+            margin-left: 10px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            vertical-align: middle;
+            position: relative;
+            top: -2px;
+        }
+        .contribute-btn svg {
+            width: 16px;
+            height: 16px;
+        }
+        .contribute-btn:hover {
+            background-color: #ffcc00;
+            transform: scale(1.1);
+            transition: all 0.2s ease;
+        }
+        
         .very-low { background-color: #3d1a1d; color: #ff9999; }
         .low { background-color: #3d2515; color: #ffcc99; }
         .medium { background-color: #3d3d10; color: #ffff99; }
@@ -126,7 +146,18 @@
         }
         .results h3 {
             margin-top: 0;
-            animation: textGlow 8s infinite;
+            color: #66a3ff;
+            animation: colorChange 8s infinite;
+        }
+        @keyframes colorChange {
+            0% { color: #66a3ff; }
+            14% { color: #a366ff; }
+            28% { color: #ff66a3; }
+            42% { color: #ffa366; }
+            57% { color: #a3ff66; }
+            71% { color: #66ffa3; }
+            85% { color: #66a3ff; }
+            100% { color: #66a3ff; }
         }
         .card-preview {
             background-color: #111111;
@@ -138,7 +169,96 @@
             border: 1px solid #444;
         }
         
-        /* Ensure mobile compatibility */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7);
+            animation: fadeIn 0.2s;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .modal-content {
+            background-color: #1a1a1a;
+            color: #ffffff;
+            margin: 15% auto;
+            padding: 20px;
+            border-radius: 5px;
+            width: 80%;
+            max-width: 420px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.6);
+        }
+        .modal-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-align: center;
+            color: #ffffff;
+        }
+        .modal-title strong {
+            color: #e6c619;
+        }
+        .modal-url-container {
+            display: flex;
+            align-items: center;
+            background-color: #111111;
+            padding: 10px;
+            border-radius: 3px;
+            margin: 15px 0 5px 0;
+            border: 1px solid #333;
+        }
+        .modal-url-icon {
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+            border-radius: 50%;
+        }
+        .modal-url {
+            flex-grow: 1;
+            word-break: break-all;
+            font-family: monospace;
+            color: #cccccc;
+        }
+        .modal-note {
+            color: #888888;
+            font-size: 12px;
+            text-align: center;
+            margin-bottom: 15px;
+            font-style: italic;
+        }
+        .modal-buttons {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+        .modal-buttons button {
+            margin-top: 0;
+            margin-left: 10px;
+            padding: 8px 16px;
+            width: auto;
+            font-size: 14px;
+            border-radius: 3px;
+        }
+        .modal-buttons .cancel-btn {
+            background-color: #333333;
+            color: white;
+            animation: none;
+        }
+        .modal-buttons .visit-btn {
+            background-color: #ffa500;
+            color: #222;
+            animation: none;
+        }
+        .modal-buttons .visit-btn:hover {
+            background-color: #ffcc00;
+        }
+        
         @media (max-width: 600px) {
             body {
                 padding: 5px;
@@ -151,12 +271,11 @@
             }
             input, select, button {
                 font-size: 16px;
-                padding: 10px 8px; /* Larger touch targets */
+                padding: 10px 8px;
                 background-color: #111111 !important;
             }
         }
         
-        /* Fix webkit autofill background */
         input:-webkit-autofill,
         input:-webkit-autofill:hover, 
         input:-webkit-autofill:focus, 
@@ -165,19 +284,6 @@
             -webkit-text-fill-color: #ffffff !important;
         }
     </style>
-    
-    <!-- Add this just before closing the head tag -->
-    <script>
-        // Ensure elements are dark on all browsers
-        document.addEventListener('DOMContentLoaded', function() {
-            // Force dark backgrounds on all inputs
-            const darkElements = document.querySelectorAll('input, select, option');
-            darkElements.forEach(el => {
-                el.style.backgroundColor = '#111111';
-                el.style.color = '#ffffff';
-            });
-        });
-    </script>
 </head>
 <body>
     <div class="container">
@@ -225,10 +331,24 @@
             <p id="pet-fusion-chance"></p>
             <div id="variant-chances"></div>
         </div>
+        
+        <div id="leaveModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-title">Want more accurate results? <strong>Contribute to our database!</strong></div>
+                <div class="modal-url-container">
+                    <img src="https://www.pngkit.com/png/full/178-1783296_g-transparent-circle-google-logo.png" alt="Google" class="modal-url-icon">
+                    <div class="modal-url">https://forms.gle/KWw5W9VsZxmtKDZ96</div>
+                </div>
+                <div class="modal-note">Redirecting to site...</div>
+                <div class="modal-buttons">
+                    <button class="cancel-btn" onclick="closeModal()">Cancel</button>
+                    <button class="visit-btn" onclick="visitSite()">Proceed</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
-        // Debug helper function - defined at global scope
         function debugValue(value, defaultVal = 0) {
             if (isNaN(value) || value === undefined || value === null) {
                 console.log("Found NaN value", value);
@@ -236,28 +356,25 @@
             }
             return value;
         }
-    
-        // Ensure dark theme on all elements
+        
         function enforceDarkMode() {
             document.querySelectorAll('input, select, option').forEach(el => {
                 el.style.backgroundColor = '#111111';
             });
         }
         
-        // Format percentage with appropriate decimals
         function formatPercentage(value) {
             if (value === 0 || value === 100) {
-                return value.toFixed(0); // No decimal for exactly 0% or 100%
+                return value.toFixed(0);
             } else if (value > 99.5) {
-                return value.toFixed(3); // Show 3 decimal places for nearly certain pulls
+                return value.toFixed(3);
             } else if (value < 0.5) {
-                return value.toFixed(4); // Show 4 decimal places for rare pulls
+                return value.toFixed(4);
             } else {
-                return value.toFixed(2); // 2 decimal places for common pulls
+                return value.toFixed(2);
             }
         }
         
-        // Function to get percentage color class
         function getColorClass(percentage) {
             if (percentage < 1) return "very-low";
             if (percentage < 5) return "low";
@@ -266,41 +383,32 @@
             return "very-high";
         }
         
-        // Calculate binomial probability of getting at least k successes
         function calculateBinomialProbability(n, p, k) {
             if (k <= 0) return 1;
             if (p === 0) return 0;
             if (p === 1) return 1;
             
-            // Handle very large numbers
             if (n > 200) {
-                // For very large n, use improved normal approximation
                 const mean = n * p;
                 const stdDev = Math.sqrt(n * p * (1 - p));
                 
-                // When n*p is very large, success is almost certain for reasonable k
                 if (mean > 100 && k < mean) {
-                    return 0.9999; // Effectively certain
+                    return 0.9999;
                 }
                 
-                // Special handling for potential numerical issues
                 try {
-                    // Continuity correction
                     const z = (k - 0.5 - mean) / stdDev;
-                    // 1 - Φ(z) where Φ is the CDF of the standard normal distribution
                     return 1 - normalCDF(z);
                 } catch (e) {
                     console.log("Error in calculation:", e);
-                    // Provide fallback value based on ratio
                     if (k/n < p) {
-                        return 0.95; // Likely to get enough cards
+                        return 0.95;
                     } else {
-                        return 0.05; // Unlikely to get enough cards
+                        return 0.05;
                     }
                 }
             }
             
-            // For small numbers of packs, we can use exact binomial calculation
             if (n * p < 10) {
                 let probability = 0;
                 for (let i = k; i <= n; i++) {
@@ -308,24 +416,19 @@
                 }
                 return probability;
             } else {
-                // For larger numbers, use normal approximation to binomial
                 const mean = n * p;
                 const stdDev = Math.sqrt(n * p * (1 - p));
                 
-                // Continuity correction
                 const z = (k - 0.5 - mean) / stdDev;
                 
-                // 1 - Φ(z) where Φ is the CDF of the standard normal distribution
                 return 1 - normalCDF(z);
             }
         }
         
-        // Calculate binomial coefficient (n choose k)
         function binomialCoefficient(n, k) {
             if (k < 0 || k > n) return 0;
             if (k === 0 || k === n) return 1;
             
-            // Use symmetry to reduce calculations
             if (k > n - k) k = n - k;
             
             let result = 1;
@@ -337,7 +440,6 @@
             return result;
         }
         
-        // Standard normal cumulative distribution function
         function normalCDF(x) {
             const t = 1 / (1 + 0.2316419 * Math.abs(x));
             const d = 0.3989423 * Math.exp(-x * x / 2);
@@ -350,16 +452,32 @@
             return probability;
         }
         
-        // Main calculation function
+        function showModal() {
+            document.getElementById('leaveModal').style.display = 'block';
+        }
+        
+        function closeModal() {
+            document.getElementById('leaveModal').style.display = 'none';
+        }
+        
+        function visitSite() {
+            window.open('https://forms.gle/KWw5W9VsZxmtKDZ96', '_blank');
+            closeModal();
+        }
+        
+        window.onclick = function(event) {
+            const modal = document.getElementById('leaveModal');
+            if (event.target == modal) {
+                closeModal();
+            }
+        };
+        
         function calculate() {
-            // Enforce dark mode on all elements
             enforceDarkMode();
             
-            // Get input values
             const cardSelect = document.getElementById('card-select');
             const cardChance = parseFloat(cardSelect.value);
             
-            // Validate card selection
             if (!cardChance) {
                 alert("Please select a card first");
                 return;
@@ -368,68 +486,57 @@
             const cardName = cardSelect.options[cardSelect.selectedIndex].text;
             const cardLower = cardName.toLowerCase();
             
-            // Parse and limit input values for safety
-            let packs = parseInt(document.getElementById('packs').value) || 1; // Default to 1 if empty
-            // Limit to reasonable maximum to avoid calculation issues
+            let packs = parseInt(document.getElementById('packs').value) || 1;
             if (packs > 1000) {
                 packs = 1000;
                 document.getElementById('packs').value = 1000;
                 alert("Maximum number of packs is limited to 1000 for calculation accuracy");
             }
             
-            let owned = parseInt(document.getElementById('owned').value) || 0; // Default to 0 if empty
+            let owned = parseInt(document.getElementById('owned').value) || 0;
             
-            // Adjust owned cards based on GCF of 3
-            // If owned > 3, reduce by the greatest multiple of 3 less than owned
             if (owned > 3) {
                 const remainder = owned % 3;
                 owned = remainder === 0 ? 0 : remainder;
             }
             
-            // Adjust owned cards based on GCF of 3
-            // If owned > 3, reduce by the greatest multiple of 3 less than owned
-            if (owned > 3) {
-                const remainder = owned % 3;
-                owned = remainder === 0 ? 0 : remainder;
-            }
+            const totalCards = packs * 5;
+            const singleCardChance = cardChance / 100;
             
-            // Calculate base chances
-            const totalCards = packs * 5; // Total cards from all packs
-            const singleCardChance = cardChance / 100; // Probability of getting the card in a single pull
-            
-            // Calculate probability of pulling at least one card
             const pullChance = 1 - Math.pow(1 - singleCardChance, totalCards);
             
-            // Calculate cards needed for pet fusion
             const cardsNeededForPet = Math.max(0, 3 - owned);
             
             let petFusionChance = 0;
             if (cardsNeededForPet <= 0) {
-                petFusionChance = 1; // Already has enough cards
+                petFusionChance = 1;
             } else {
-                // Calculate the probability of pulling at least cardsNeededForPet cards
                 petFusionChance = calculateBinomialProbability(totalCards, singleCardChance, cardsNeededForPet);
             }
             
-            // Calculate formatted percentages
             const pullPercentage = debugValue(pullChance * 100);
             const pullPercentageStr = formatPercentage(pullPercentage);
             const pullColorClass = getColorClass(pullPercentage);
             
-            // Display basic results
             document.getElementById('results').style.display = 'block';
-            document.getElementById('card-pull-chance').innerHTML = 
-                `Chance of pulling <strong>${cardName}</strong> at least once: <span class="percentage ${pullColorClass}">${pullPercentageStr}%</span>`;
             
-            // Special handling for Ultra Rare Card
+            const contributeButton = `
+                <button class="contribute-btn" onclick="showModal()" style="background-color: #ffa500; animation: none;">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38"/>
+                    </svg>
+                </button>`;
+            
+            document.getElementById('card-pull-chance').innerHTML = 
+                `Chance of pulling <strong>${cardName}</strong> at least once: <span class="percentage ${pullColorClass}" style="vertical-align: middle; margin-right: 3px;">${pullPercentageStr}%</span>
+                <span style="display: inline-block; vertical-align: middle;">${contributeButton}</span>`;
+            
             if (cardName === "Huges, shiny rainbow cards, etc.") {
-                // Only show pull chance for Ultra Rare
                 document.getElementById('pet-fusion-chance').innerHTML = 
                     `<em>Note: Fusion chances cannot be calculated accurately for Ultra Rare Cards</em>`;
                 document.getElementById('variant-chances').innerHTML = '';
-                return; // Exit early
+                return;
             } else {
-                // Regular card with fusion information
                 const fusionPercentage = debugValue(petFusionChance * 100);
                 const fusionPercentageStr = formatPercentage(fusionPercentage);
                 const fusionColorClass = getColorClass(fusionPercentage);
@@ -440,39 +547,31 @@
             
             document.getElementById('variant-chances').innerHTML = '';
             
-            // Enforce dark mode again after results are displayed
             enforceDarkMode();
         }
         
-        // Initialize event listeners
         window.addEventListener('load', function() {
-            // Enforce dark theme
             enforceDarkMode();
             
-            // Add event listener to disable owned input for ultra rare cards
             const cardSelect = document.getElementById('card-select');
             const ownedInput = document.getElementById('owned');
             
             cardSelect.addEventListener('change', function() {
                 if (this.value === "0.226") {
-                    // Ultra rare card selected
                     ownedInput.disabled = true;
                     ownedInput.style.backgroundColor = "#222222";
                     ownedInput.style.opacity = "0.5";
                     ownedInput.value = "0";
                 } else {
-                    // Regular card selected
                     ownedInput.disabled = false;
                     ownedInput.style.backgroundColor = "#111111";
                     ownedInput.style.opacity = "1";
                 }
                 
-                // Re-enforce dark theme
                 enforceDarkMode();
             });
         });
         
-        // Handle window resize
         window.addEventListener('resize', enforceDarkMode);
     </script>
 </body>
